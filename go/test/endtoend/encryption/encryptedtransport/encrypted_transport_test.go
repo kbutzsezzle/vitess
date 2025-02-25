@@ -55,6 +55,7 @@ package encryptedtransport
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -62,8 +63,6 @@ import (
 	"os/exec"
 	"path"
 	"testing"
-
-	"github.com/pkg/errors"
 
 	"vitess.io/vitess/go/constants/sidecar"
 	"vitess.io/vitess/go/test/endtoend/encryption"
@@ -305,7 +304,7 @@ func clusterSetUp(t *testing.T) (int, error) {
 
 	// Start topo server
 	if err := clusterInstance.StartTopo(); err != nil {
-		return 1, errors.Wrap(err, "unable to start topo")
+		return 1, fmt.Errorf("unable to start topo %w", err)
 	}
 
 	// create all certs
@@ -391,7 +390,7 @@ func clusterSetUp(t *testing.T) (int, error) {
 	for _, proc := range mysqlProcesses {
 		err := proc.Wait()
 		if err != nil {
-			return 1, errors.Wrap(err, "unable to wait on mysql process")
+			return 1, fmt.Errorf("unable to wait on mysql process %w", err)
 		}
 	}
 	return 0, nil
